@@ -138,6 +138,7 @@ dserror_t ds18b20_read(int *temp)
 		data[i] = OneWireInByte();
 	}
         
+        
 	if (CRC8(data, 8) != data[8]) {
 		return DS_CRC_ERROR;
 	}

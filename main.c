@@ -1,4 +1,3 @@
-#include "wiring.h"
 #include "btle.h"
 #include "main.h"
 #include "ds18b20.h"
@@ -56,7 +55,45 @@ struct NodeConfig
 struct NodeConfig nc;
 uint8_t temp_buf[TEMP_MEM_BUFFER_SIZE];
 
+void mcu_init(void)
+{
+// XOSC32K input
+P0DIR = 0x00;
+P1DIR = 0x00;
+P2DIR = 0x00;
+P3DIR = 0x00;
+
+P0 = 0x00;
+P1 = 0x00;
+P2 = 0x00;
+P3 = 0x00;
+
+// Open latch
+OPMCON = 0x00;
+}
+
+void disconnectGPIO()
+{
+
+  uint8_t i;
+
+     P0DIR=0xFF;
+    P1DIR=0xFF;
+    P2DIR=0xFF;
+    P3DIR=0xFF;
+
+  for (i = 0; i < 8; i ++)
+  {
+    P0CON = 0x70 | i;
+    P1CON = 0x70 | i;
+    P2CON = 0x70 | i;
+    P3CON = 0x70 | i;
+  }
+    OPMCON |= 0x02;
+}
+
 void setup(){
+        
 	interrupts();
 	memory_flash_read_bytes(NODE_CONFIGURATION_ADDRESS,sizeof(nc),(uint8_t*)nc);
 
@@ -72,13 +109,17 @@ void setup(){
                                        GPIO_PIN_CONFIG_OPTION_PIN_MODE_INPUT_BUFFER_ON_NO_RESISTORS);
 
     	uart_configure_8_n_1_19200();
+        delay_ms(100);
+        
 #endif
 
 								// turn interrupts on
         
         if(nc.count == 0 || nc.count == TEMP_INTERVALL){
-	
+            mcu_init();
+            //delay_ms(500);
             ret = ds18b20_read(&temp);
+            
 #if DEBUG
             printf("Temperature: %d, status=%d .\n", temp, ret);
 #endif
@@ -97,8 +138,11 @@ void setup(){
 	nc.count++;
 	memory_flash_write_bytes_smart(NODE_CONFIGURATION_ADDRESS,sizeof(nc),(uint8_t*)nc,temp_buf);
 	
-	watchdogRun(SLEEP_TIME_MS);						// start watchdog and reset at 700 ms
-	sleep(MEMORY_TIMER_OFF);				// switch to lowest mode that can wakeup from wdt
+        
+        watchdogRun(SLEEP_TIME_MS);						// start watchdog and reset at 700 ms
+	disconnectGPIO();
+	
+        sleep(MEMORY_TIMER_OFF);				// switch to lowest mode that can wakeup from wdt
         
 }
 

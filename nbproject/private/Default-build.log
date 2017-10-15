@@ -1,0 +1,4 @@
+sdcc -I ./include -L ./lib/* --std-sdcc99 --model-large --code-loc 0x0000 --code-size 0x4000 --xram-loc 0x0000 --xram-size 0x400 main.c ds18b20.rel crc8.rel
+?ASlink-Error-<cannot open> : "ds18b20.rel"
+Makefile:7: receptet för målet ”main” misslyckades
+make: *** [main] Fel 1

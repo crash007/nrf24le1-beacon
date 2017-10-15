@@ -125,7 +125,7 @@ bool advertise( void* buf, uint8_t buflen ) {
 	buffer.mac[2] = 0x04; //((__TIME__[0]-0x30) << 4) | (__TIME__[1]-0x30);
 	buffer.mac[3] = 0x03; //((__DATE__[4]-0x30) << 4) | (__DATE__[5]-0x30);
 	buffer.mac[4] = 0x02; //month(__DATE__);
-	buffer.mac[5] = 0x01;
+	buffer.mac[5] = 0x02;
 	//buffer.mac[5] = ((__DATE__[9]-0x30) << 4) | (__DATE__[10]-0x30);
 
 	for (i = 0; i < buflen; i++)
