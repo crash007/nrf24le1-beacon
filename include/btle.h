@@ -9,6 +9,7 @@
 #include "rf24.h"
 
 bool advertise( void* buf, uint8_t buflen );
+bool createAdvertisePackage( void* buf, uint8_t buflen, void* out, uint8_t* outbufSize );
 void crc( uint8_t len, uint8_t* dst );
 void whiten( uint8_t len );
 void btleBegin();
@@ -114,7 +115,20 @@ bool btleAdvertise( void* buf, uint8_t buflen ) {
 // Standardized data types can be seen here: 
 // https://www.bluetooth.org/en-us/specification/assigned-numbers/generic-access-profile
 bool advertise( void* buf, uint8_t buflen ) {
-	// name & total payload size
+	
+    uint8_t outbuf[32];
+        uint8_t outbufSize=0;
+        
+        createAdvertisePackage( buf, buflen, &outbuf, &outbufSize);
+	// flush buffers and send
+	stopListening();
+	write( outbuf, outbufSize, false );
+
+	return true;
+}
+
+bool createAdvertisePackage( void* buf, uint8_t buflen, void* out, uint8_t* outbufSize ) {
+    // name & total payload size
         uint8_t pls = 0;
 	uint8_t i;
 	uint8_t* outbuf;
@@ -147,11 +161,13 @@ bool advertise( void* buf, uint8_t buflen ) {
 	// whiten header+MAC+payload+CRC, swap bit order
 	whiten( pls+11 );
 	swapbuf( pls+11 );
-	// flush buffers and send
-	stopListening();
-	write( outbuf, pls+11, false );
-
-	return true;
+        
+        //kopiera array
+        for(i=0; i<pls+11; i++){
+            ((uint8_t *) out)[i] = ((uint8_t*)outbuf)[i];
+        }  
+        *outbufSize = pls+11;
+        return true;
 }
 
 // see BT Core Spec 4.0, Section 6.B.3.1.1
