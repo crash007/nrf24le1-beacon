@@ -9,6 +9,8 @@ main: main.c
 	./programmer.pl main.hex $(COMPORT)
 #	$(SERIAL_MONITOR)
 	rm -f *.asm *.ihx *.lk *.lst *.map *.mem *.rel *.rst *.sym *.lnk *.hex
+clean:
+	rm -f *.asm *.ihx *.lk *.lst *.map *.mem *.rel *.rst *.sym *.lnk *.hex
 
 dht: dht.c
 	#sdcc $(CCFLAGS) dht.c
