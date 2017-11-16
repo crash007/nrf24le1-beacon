@@ -5,7 +5,8 @@
  * modify it under the terms of the GNU General Public License
  * version 3 as published by the Free Software Foundation.
 */
-
+#ifndef BTLE_H_
+#define BTLE_H_
 #include "rf24.h"
 
 bool advertise( void* buf, uint8_t buflen );
@@ -225,3 +226,4 @@ void whiten( uint8_t len ) {
 		*(buf++) ^= res;
 	}
 }
+#endif /* BTLE_H_ */

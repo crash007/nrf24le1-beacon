@@ -8,19 +8,20 @@
 #ifndef DS18B20_H_
 #define DS18B20_H_
 
-#define SKIP_ROM_CMD	0xcc
-#define START_CONV_CMD	0x44
-#define READ_SCR_CMD	0xbe
-#define WRITE_SCR_CMD	0x4e
-#define REG_TH			0x00
-#define REG_TL			0xff
-#define REG_CONFIG		0x3f	// precision 10bit
+#define SKIP_ROM_CMD 0xcc
+#define START_CONV_CMD 0x44
+#define READ_SCR_CMD 0xbe
+#define WRITE_SCR_CMD 0x4e
+#define REG_TH   0x00
+#define REG_TL   0xff
+#define REG_CONFIG  0x3f // precision 10bit
+
+#define DSPIN GPIO_PIN_ID_P0_0
 
 typedef enum {
-	
     DS_NO_ERROR,
-	DS_NOT_FOUND,
-	DS_TIMEOUT,
+    DS_NOT_FOUND,
+    DS_TIMEOUT,
     DS_CRC_ERROR
 } dserror_t;
 
